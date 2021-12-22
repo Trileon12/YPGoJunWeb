@@ -3,12 +3,13 @@ package main
 //TODO: Ментор: почему такое странное подключение internal пакета? почему не работает подлючение черех github
 import (
 	"../../internal/app"
+	"../../internal/storage"
 	"net/http"
 )
 
 func main() {
 
-	app.InitializeUrlRepository()
+	storage.InitializeUrlRepository()
 
 	http.HandleFunc("/", app.URLHandler)
 

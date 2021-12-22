@@ -1,15 +1,11 @@
 package app
 
 import (
+	"../../internal/storage"
 	"io"
 	"net/http"
 	"path"
 )
-
-func GetHandler(w http.ResponseWriter, r *http.Request) {
-	// этот обработчик принимает только запросы, отправленные методом GETif r.Method != http.MethodGet {
-	http.Error(w, "Only GET requests are allowed!", http.StatusMethodNotAllowed)
-}
 
 func URLHandler(writer http.ResponseWriter, request *http.Request) {
 
@@ -32,8 +28,8 @@ func GetShortUrl(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	link := string(b)
-	shortLink := GetUrlShort(link)
-
+	shortLink := storage.GetUrlShort(link)
+	writer.Header().Set("Content-Type", "text/plain")
 	writer.WriteHeader(http.StatusCreated)
 	writer.Write([]byte(shortLink))
 }
@@ -41,7 +37,7 @@ func GetShortUrl(writer http.ResponseWriter, request *http.Request) {
 func getFullURL(writer http.ResponseWriter, request *http.Request) {
 
 	id := path.Base(request.URL.Path)
-	URL, err := GetOriginalUrl(id)
+	URL, err := storage.GetOriginalUrl(id)
 	if err != nil {
 		http.Error(writer, err.Error(), 500)
 		return
